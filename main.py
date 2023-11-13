@@ -31,7 +31,7 @@ class Ventana1(QMainWindow):
         self.setFixedHeight(self.alto)
 
         self.fondo = QLabel(self)
-        self.imagenFondo = QPixmap('Imagenes/image.png')
+        self.imagenFondo = QPixmap('Imagenes/img3.png')
         self.fondo.setPixmap(self.imagenFondo)
         self.fondo.setScaledContents(True)
         self.resize(self.imagenFondo.width(), self.imagenFondo.height())
@@ -225,6 +225,8 @@ class Ventana1(QMainWindow):
                                           "color: white;"
                                           "padding: 10px;"
                                           "margin-top: 40px;")
+
+        self.botonRecuperar.clicked.connect(self.accion_botonRecuperar)
 
         self.ladoDerecho.addRow(self.botonBuscar, self.botonRecuperar)
 
@@ -423,6 +425,116 @@ class Ventana1(QMainWindow):
                     self.ventanaDialogo.exec_()
 
 
+    def accion_botonRecuperar(self):
+
+        self.datosCorrectos = True
+
+        self.ventanaDialogo.setWindowTitle("Recuperar contraseña")
+
+        if (
+            self.pregunta1.text() == '' or
+            self.pregunta2.text() == '' or
+            self.pregunta3.text() == ''
+        ):
+
+            self.datosCorrectos = False
+
+            self.mensaje.setText("Para recuperar la contraseña debe"
+                                 "\nbuscar las preguntas de verificación."
+                                 "\n\nPrimero ingrese su documento y luego"
+                                 "\npresione el botón 'Buscar'.")
+            self.ventanaDialogo.exec_()
+
+        if(
+            self.pregunta1.text() != '' and
+            self.respuesta1.text() == '' and
+            self.pregunta2.text() != '' and
+            self.respuesta2.text() == '' and
+            self.pregunta3.text() != '' and
+            self.respuesta3.text() == ''
+        ):
+
+            self.datosCorrectos = False
+
+            self.mensaje.setText("Para recuperar la contraseña debe"
+                                 "\ningresar las respuestas a cada pregunta.")
+
+            self.ventanaDialogo.exec_()
+
+
+        if (
+            self.datosCorrectos
+        ):
+
+            self.file = open('datos/cliente.txt', 'rb')
+
+            usuarios = []
+
+            while self.file:
+                linea = self.file.readline().decode('UTF-8')
+
+                lista = linea.split(";")
+
+                if linea == '':
+                    break
+
+                u= Cliente(
+                    lista[0],
+                    lista[1],
+                    lista[2],
+                    lista[3],
+                    lista[4],
+                    lista[5],
+                    lista[6],
+                    lista[7],
+                    lista[8],
+                    lista[9],
+                    lista[10]
+                    )
+
+                usuarios.append(u)
+
+            self.file.close()
+
+            existeDocumento = False
+
+            resp1 = ''
+            resp2 = ''
+            resp3 = ''
+            passw = ''
+
+            for u in usuarios:
+
+                if u.documento == self.documento.text():
+
+                    existeDocumento = True
+
+                    resp1 = u.respuesta1
+                    resp2 = u.respuesta2
+                    resp3 = u.respuesta3
+                    passw = u.password
+
+                    break
+
+            if(
+                self.respuesta1.text().lower().strip() == resp1.lower().strip() and
+                self.respuesta2.text().lower().strip() == resp2.lower().strip() and
+                self.respuesta3.text().lower().strip() == resp3.lower().strip()
+            ):
+
+                self.accion_botonLimpiar()
+
+                self.mensaje.setText("Contraseña: " + passw)
+
+                self.ventanaDialogo.exec_()
+
+            else:
+
+                self.mensaje.setText("Las respuestas son incorrectas para éstas"
+                                     "\npreguntas de recuperación."
+                                     "\nVuelva a intentarlo.")
+
+                self.ventanaDialogo.exec_()
 
 
 

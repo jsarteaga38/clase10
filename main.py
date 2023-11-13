@@ -273,6 +273,7 @@ class Ventana1(QMainWindow):
 
     def accion_botonRegistrar(self):
 
+        self.datosCorrectos = True
 
         if (
                 self.password.text() != self.password2.text()

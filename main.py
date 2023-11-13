@@ -354,7 +354,7 @@ class Ventana1(QMainWindow):
 
             self.mensaje.setText("El documento debe ser numérico."
                                  "\nno ingrese letras"
-                                 "ni carácteres especiales.")
+                                 " ni carácteres especiales.")
 
 
             self.ventanaDialogo.exec_()
@@ -420,6 +420,8 @@ class Ventana1(QMainWindow):
                                          + self.documento.text())
 
                     self.ventanaDialogo.exec_()
+
+
 
 
 
